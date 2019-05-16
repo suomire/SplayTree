@@ -1,7 +1,4 @@
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
 
@@ -26,21 +23,51 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
 
     public boolean add(T value) {
+        Node<T> parentInsertPlace;
+        Node<T> elementPlace = root;
+        while (elementPlace != null) {
+            parentInsertPlace = elementPlace;
+            if (value.compareTo(elementPlace.value) < 0) {
+                elementPlace = elementPlace.left;
+            } else if (value.compareTo(elementPlace.value) > 0) {
+                elementPlace = elementPlace.right;
+            }
+            Node<T> insertElem = new Node<>(value);
+            insertElem.parent = parentInsertPlace;
+            if (parentInsertPlace == null) root = insertElem;
+            else if (insertElem.value.compareTo(parentInsertPlace.value) < 0) {
+                parentInsertPlace.left = insertElem;
+            } else if (insertElem.value.compareTo(parentInsertPlace.value) > 0) {
+                parentInsertPlace.right = insertElem;
+            }
+            splay(insertElem);
+            size++;
+            return true;
+        }
         return true;
     }
 
     @Override
     public boolean remove(Object o) {
+
         return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return true;
+        int result = 0;
+        for (T element : c) {
+            if (add(element)) result++;
+        }
+        return (result > 0);
     }
 
+    //retain alll??????????????---------------------------
     @Override
     public boolean removeAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!remove(o)) return false;
+        }
         return true;
     }
 
@@ -51,55 +78,123 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
     @Override
     public boolean containsAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!contains(o)) return false;
+        }
         return true;
     }
 
     private Node<T> find(T value) {
+        Node<T> current = root;
+        while (current != null) {
+            if (value.compareTo(current.value) < 0) {
+                current = current.left;
+            } else if (value.compareTo(current.value) > 0) {
+                current = current.right;
+            } else {
+                splay(current);
+                return current;
+            }
+        }
         return null;
     }
 
     private Node<T> merge(Node<T> tree1, Node<T> tree2) {
-        return null;
+        if (tree1 == null || tree2 == null) {
+            if (tree1 == null) {
+                return tree2;
+            }
+            return tree1;
+        } else {
+            tree1 = find(maxNode(tree1).value);
+            tree1.right = tree2;
+            return tree1;
+        }
     }
 
     private void splay(Node<T> element) {
+        if (isRoot(element)) return;
+        Node<T> parent = element.parent;
+        Node<T> gparent = parent.parent;
+
+        if (gparent == null) {
+            if (parent.left == element) {
+                zig(parent, element);
+            }
+            if (parent.right == element) {
+                zig(parent, element);
+            } else {
+                if (gparent.left == parent && parent.left == element) {
+                    zigZig(gparent, parent);
+                    zigZig(parent, element);
+                } else if (gparent.right == parent && parent.right == element) {
+                    zagZag(gparent, parent);
+                    zagZag(parent, element);
+                } else if (gparent.right == parent && parent.left == element) {
+                    zagZig(gparent, parent, element);
+                } else if (gparent.left == parent && parent.right == element) {
+                    zigZag(gparent, parent, element);
+                }
+            }
+        }
     }
 
-    private void rightMoveToRoot(Node<T> parent, Node<T> node) {
+    private void zig(Node<T> parent, Node<T> node) {
+        Node<T> right = node.right;
+        node.right = parent;
+        node.parent = null;
+        root = node;
+        parent.parent = node;
+        parent.left = right;
+        if (right != null) {
+            right.parent = parent;
+        }
     }
 
-    private void leftMoveToRoot(Node<T> parent, Node<T> node) {
+    private void zag(Node<T> parent, Node<T> node) {
+        Node<T> left = node.left;
+        node.left = parent;
+        node.parent = null;
+        root = node;
+        parent.parent = node;
+        parent.right = left;
+        if (left != null) {
+            left.parent = parent;
+        }
     }
 
-    private void rotateLeft(Node<T> parent, Node<T> node) {
+    private void zigZig(Node<T> parent, Node<T> node) {
     }
 
-    private void rotateRight(Node<T> parent, Node<T> node) {
+    private void zagZag(Node<T> parent, Node<T> node) {
     }
 
-    private void rightZigZag(Node<T> gparent, Node<T> parent, Node<T> node) {
+    private void zigZag(Node<T> gparent, Node<T> parent, Node<T> node) {
     }
 
-    private void leftZigZag(Node<T> gparent, Node<T> parent, Node<T> node) {
+    private void zagZig(Node<T> gparent, Node<T> parent, Node<T> node) {
     }
 
     private void setParent(Node<T> previous, Node<T> current) {
 
     }
 
-    private Node<T> maxNode(Node<T> vertex) {
-        return null;
+    private Node<T> maxNode(Node<T> node) {
+        if (node.right != null) {
+            return maxNode(node.right);
+        } else {
+            return node;
+        }
     }
 
     @Override
     public Iterator<T> iterator() {
         return null;
     }
-
+    /*
     @Override
     public void forEach(Consumer<? super T> action) {
-
-    }
+    }*/
 
     @Override
     public int size() {
@@ -125,7 +220,10 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
     @Override
     public boolean contains(Object o) {
-        return true;
+        @SuppressWarnings("unchecked")
+        T t = (T) o;
+        Node<T> closest = find(t);
+        return closest != null && closest.value.compareTo(t) == 0;
     }
 
 
@@ -238,7 +336,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
     @Override
     public String toString() {
-        Iterator iterator = new SplayTreeIterator();
+        Iterator<T> iterator = new SplayTreeIterator();
         StringBuilder builder = new StringBuilder();
         while (iterator.hasNext()) {
             builder.append(iterator.next());
