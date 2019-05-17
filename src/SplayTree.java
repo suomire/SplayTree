@@ -49,7 +49,12 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
     @Override
     public boolean remove(Object o) {
-
+        if (o == null || root == null) return false;
+        @SuppressWarnings("unchecked")
+        Node<T> t = find((T) o);
+        if (t == null) return false;
+        root = merge(t.left, t.right);
+        size--;
         return true;
     }
 
