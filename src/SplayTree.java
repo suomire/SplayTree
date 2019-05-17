@@ -122,7 +122,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
                 zig(parent, element);
             }
             if (parent.right == element) {
-                zig(parent, element);
+                zag(parent, element);
             } else {
                 if (gparent.left == parent && parent.left == element) {
                     zigZig(gparent, parent);
@@ -164,19 +164,57 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     }
 
     private void zigZig(Node<T> parent, Node<T> node) {
+        Node<T> right = node.right;
+        node.right = parent;
+        node.parent = parent.parent;
+        //setparent??
+        parent.parent = node;
+        parent.left = right;
+        if (right != null) right.parent = parent;
+        if (node.parent == null) root = node;
+
     }
 
     private void zagZag(Node<T> parent, Node<T> node) {
+        Node<T> left = node.left;
+        node.left = parent;
+        node.parent = parent.parent;
+        setParent(parent, node);
+        parent.parent = node;
+        parent.left = left;
+        if (left != null) left.parent = parent;
+        if (node.parent == null) root = node;
+
     }
 
     private void zigZag(Node<T> gparent, Node<T> parent, Node<T> node) {
+        Node<T> left = node.left;
+        gparent.left = node;
+        node.parent = gparent;
+        setParent(parent, node);
+        node.left = parent;
+        parent.parent = node;
+        parent.right = left;
+        if (left != null) left.parent = parent;
+        zigZig(gparent, node);
     }
 
     private void zagZig(Node<T> gparent, Node<T> parent, Node<T> node) {
+        Node<T> right = node.right;
+        gparent.right = node;
+        node.parent = gparent;
+        node.right = parent;
+        parent.parent = node;
+        parent.left = right;
+        if (right != null) right.parent = parent;
+        zigZig(gparent, node);
     }
 
     private void setParent(Node<T> previous, Node<T> current) {
-
+        if (current.parent != null) {
+            if (previous.parent.left == previous) previous.parent.left = current;
+            else previous.parent.right = current;
+        }
     }
 
     private Node<T> maxNode(Node<T> node) {
