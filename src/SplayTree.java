@@ -2,7 +2,6 @@ import java.util.*;
 
 public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
 
-
     private static class Node<T> {
         final T value;
         Node<T> left = null;
@@ -23,27 +22,31 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
 
     public boolean add(T value) {
-        Node<T> parentInsertPlace;
+        Object a = (Integer) 20;
+        T tt = (T) a;
+        if (value.compareTo(tt) == 0) {
+            int b = 0;
+        }
+        Node<T> preInsertPlace = null;
         Node<T> elementPlace = root;
         while (elementPlace != null) {
-            parentInsertPlace = elementPlace;
+            preInsertPlace = elementPlace;
             if (value.compareTo(elementPlace.value) < 0) {
                 elementPlace = elementPlace.left;
             } else if (value.compareTo(elementPlace.value) > 0) {
                 elementPlace = elementPlace.right;
             }
-            Node<T> insertElem = new Node<>(value);
-            insertElem.parent = parentInsertPlace;
-            if (parentInsertPlace == null) root = insertElem;
-            else if (insertElem.value.compareTo(parentInsertPlace.value) < 0) {
-                parentInsertPlace.left = insertElem;
-            } else if (insertElem.value.compareTo(parentInsertPlace.value) > 0) {
-                parentInsertPlace.right = insertElem;
-            }
-            splay(insertElem);
-            size++;
-            return true;
         }
+        Node<T> insertElem = new Node<>(value);
+        insertElem.parent = preInsertPlace;
+        if (preInsertPlace == null) root = insertElem;
+        else if (insertElem.value.compareTo(preInsertPlace.value) < 0) {
+            preInsertPlace.left = insertElem;
+        } else if (insertElem.value.compareTo(preInsertPlace.value) > 0) {
+            preInsertPlace.right = insertElem;
+        }
+        splay(insertElem);
+        size++;
         return true;
     }
 
@@ -67,7 +70,19 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         return (result > 0);
     }
 
-    //retain alll??????????????---------------------------
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean retainAll(Collection<?> c) {
+        SplayTree<T> set = this;
+        List<T> retained = new ArrayList<>();
+        for (Object o : c) {
+            if (contains(o)) retained.add((T) o);
+        }
+        clear();
+        addAll(retained);
+        return !equals(set);
+    }
+
     @Override
     public boolean removeAll(Collection<?> c) {
         for (Object o : c) {
@@ -118,16 +133,19 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     }
 
     private void splay(Node<T> element) {
-        if (isRoot(element)) return;
-        Node<T> parent = element.parent;
-        Node<T> gparent = parent.parent;
+        while (!isRoot(element)) {
+            if (element.parent == null) return;
 
-        if (gparent == null) {
-            if (parent.left == element) {
-                zig(parent, element);
-            }
-            if (parent.right == element) {
-                zag(parent, element);
+            Node<T> parent = element.parent;
+            Node<T> gparent = parent.parent;
+
+            if (gparent == null) {
+                if (parent.left == element) {
+                    zig(parent, element);
+                }
+                if (parent.right == element) {
+                    zag(parent, element);
+                }
             } else {
                 if (gparent.left == parent && parent.left == element) {
                     zigZig(gparent, parent);
@@ -172,7 +190,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         Node<T> right = node.right;
         node.right = parent;
         node.parent = parent.parent;
-        //setparent??
+        setParent(parent, node);
         parent.parent = node;
         parent.left = right;
         if (right != null) right.parent = parent;
@@ -186,7 +204,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         node.parent = parent.parent;
         setParent(parent, node);
         parent.parent = node;
-        parent.left = left;
+        parent.right = left;
         if (left != null) left.parent = parent;
         if (node.parent == null) root = node;
 
@@ -196,7 +214,6 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         Node<T> left = node.left;
         gparent.left = node;
         node.parent = gparent;
-        setParent(parent, node);
         node.left = parent;
         parent.parent = node;
         parent.right = left;
@@ -212,7 +229,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         parent.parent = node;
         parent.left = right;
         if (right != null) right.parent = parent;
-        zigZig(gparent, node);
+        zagZag(gparent, node);
     }
 
     private void setParent(Node<T> previous, Node<T> current) {
