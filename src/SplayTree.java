@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.Consumer;
 
 public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
 
@@ -360,17 +361,18 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        return null;
+        return new SubSet<>(fromElement, toElement, this);
+
     }
 
     @Override
     public SortedSet<T> headSet(T toElement) {
-        return null;
+        return new SubSet<>(null, toElement, this);
     }
 
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        return null;
+        return new SubSet<>(fromElement, null, this);
     }
 
 
@@ -407,4 +409,156 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         return builder.toString();
     }
 
+    private class SubSet<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
+
+        private T fromElement; //bottom border
+        private T toElement; //up border
+        private SplayTree<T> delegate;
+
+
+        public SubSet(T fromElement, T toElement, SplayTree<T> delegate) {
+            this.fromElement = fromElement;
+            this.toElement = toElement;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Comparator<? super T> comparator() {
+            return null;
+        }
+
+        @Override
+        public SortedSet<T> subSet(T fromElement, T toElement) {
+            if (checkBounds(fromElement) && checkBounds(toElement)) {
+                return new SubSet<>(fromElement, toElement, delegate);
+            } else throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public SortedSet<T> headSet(T toElement) {
+            if (checkBounds(toElement)) {
+                return new SubSet<>(this.fromElement, toElement, delegate);
+            } else throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public SortedSet<T> tailSet(T fromElement) {
+            if (checkBounds(fromElement)) {
+                return new SubSet<>(this.fromElement, null, delegate);
+            } else throw new IndexOutOfBoundsException();
+        }
+
+        @Override
+        public T first() {
+            Iterator<T> iterator = delegate.iterator();
+            T currentFirst = null;
+            while (iterator.hasNext() && currentFirst == null) {
+                T nextElement = iterator.next();
+                if (checkBounds(nextElement) && this.contains(nextElement)) {
+                    currentFirst = nextElement;
+                }
+            }
+            return currentFirst;
+        }
+
+        @Override
+        public T last() {
+            Iterator<T> iterator = delegate.iterator();
+            T currentLast = null;
+            while (iterator.hasNext()) {
+                T nextElement = iterator.next();
+                if (checkBounds(nextElement) && this.contains(nextElement)) {
+                    currentLast = nextElement;
+                }
+            }
+            return currentLast;
+        }
+
+        @Override
+        public int size() {
+            int size = 0;
+            for (T next : delegate) {
+                if (checkBounds(next)) size++;
+            }
+            return size;
+        }
+
+        private boolean checkBounds(T value) {
+            if (fromElement != null && toElement != null)
+                return (toElement.compareTo(value) > 0 && fromElement.compareTo(value) <= 0);
+            else if (fromElement == null)
+                return (toElement.compareTo(value) > 0);
+            else return (fromElement.compareTo(value) <= 0);
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            T value = (T) o;
+            for (T t : this) {
+                if (value.compareTo(t) == 0) return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return new SubSetIterator();
+        }
+
+        @Override
+        public boolean add(T t) {
+            delegate.add(t);
+            return true;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            T value = (T) o;
+
+            if ((checkBounds(value)) && contains(value))
+                delegate.remove(value);
+            else throw new IllegalArgumentException();
+            return true;
+        }
+
+
+        public class SubSetIterator implements Iterator<T> {
+
+            Iterator<T> iterator = delegate.iterator();
+            T current = null;
+            T next = findNext();
+
+            private T findNext() {
+                if (fromElement != null) {
+                    next = fromElement;
+                }
+                while (iterator.hasNext()) {
+                    T nextElement = iterator.next();
+                    if (checkBounds(nextElement)) {
+                        next = nextElement;
+                        return nextElement;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            @Override
+            public T next() {
+                if (next == null) throw new NoSuchElementException();
+                current = next;
+                next = findNext();
+                return current;
+            }
+
+            @Override
+            public void remove() {
+                iterator.remove();
+            }
+        }
+    }
 }
