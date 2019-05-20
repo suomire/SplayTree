@@ -249,7 +249,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new SplayTreeIterator();
     }
     /*
     @Override
