@@ -106,15 +106,15 @@ public class SplayTreeTest {
     @Test
     public void retainAll() {
         init();
-        splayTree.retainAll(listIn1);
-        assertTrue(splayTree.containsAll(listIn1));
+        splayTree.retainAll(listIn2);
+        assertTrue(splayTree.containsAll(listIn2));
         assertFalse(splayTree.contains(10));
         assertFalse(splayTree.contains(11));
         assertFalse(splayTree.contains(14));
         assertFalse(splayTree.contains(18));
         assertFalse(splayTree.contains(15));
         splayTree.clear();
-        splayTree.addAll(listIn1);
+        splayTree.addAll(listIn2);
         assertFalse(splayTree.retainAll(listIn1));
     }
 
