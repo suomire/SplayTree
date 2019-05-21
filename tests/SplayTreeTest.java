@@ -79,6 +79,7 @@ public class SplayTreeTest {
 
     @Test
     public void containsAll() {
+        init();
         boolean bool = splayTree.containsAll(listIn1);
         assertTrue(bool);
     }
@@ -104,6 +105,7 @@ public class SplayTreeTest {
 
     @Test
     public void retainAll() {
+        init();
         splayTree.retainAll(listIn1);
         assertTrue(splayTree.containsAll(listIn1));
         assertFalse(splayTree.contains(10));
@@ -134,6 +136,7 @@ public class SplayTreeTest {
 
     @Test
     public void subSet() {
+        init();
         SortedSet<Integer> subset = splayTree.subSet(9, 12);
         assertEquals(Optional.of(11), Optional.of(subset.last()));
         assertEquals(Optional.of(9), Optional.of(subset.first()));
