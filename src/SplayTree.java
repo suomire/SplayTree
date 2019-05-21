@@ -254,10 +254,6 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     public Iterator<T> iterator() {
         return new SplayTreeIterator();
     }
-    /*
-    @Override
-    public void forEach(Consumer<? super T> action) {
-    }*/
 
     @Override
     public int size() {
@@ -347,14 +343,6 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
             SplayTree.this.remove(current.value);
         }
     }
-
-
-    /*@Override
-    public boolean removeIf(Predicate<? super T> filter) {
-        return false;
-    }
-
-     */
 
     @Override
     public Comparator<? super T> comparator() {

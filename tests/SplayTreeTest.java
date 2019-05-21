@@ -1,20 +1,21 @@
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 public class SplayTreeTest {
     private List listIn1;
+    private List listIn2;
     private SortedSet<Integer> splayTree;
-    private SortedSet<Integer> treeSet;
+    private SortedSet<Integer> set;
 
 
     void init() {
         splayTree = new SplayTree<>();
-        treeSet = new TreeSet<>();
+        set = new TreeSet<>();
         listIn1 = Arrays.asList(10, 11, 14, 18, 15, 20, 13, 9, 7, 8, 12);
+        listIn2 = Arrays.asList(20, 13, 9, 7, 8, 12);
         splayTree.addAll(listIn1);
     }
 
@@ -77,11 +78,6 @@ public class SplayTreeTest {
     }
 
     @Test
-    public void clear() {
-        splayTree.clear();
-    }
-
-    @Test
     public void containsAll() {
         boolean bool = splayTree.containsAll(listIn1);
         assertTrue(bool);
@@ -127,6 +123,29 @@ public class SplayTreeTest {
 
     @Test
     public void subSet() {
+        SortedSet<Integer> subset = splayTree.subSet(9, 12);
+        assertEquals(Optional.of(11), Optional.of(subset.last()));
+        assertEquals(Optional.of(9), Optional.of(subset.first()));
+        assertEquals(3, subset.size());
+        //Inclusive
+        assertTrue(subset.contains(9));
+        //Exclusive
+        assertFalse(subset.contains(12));
+
+        assertFalse(subset.contains(14));
+        assertFalse(subset.contains(18));
+        assertFalse(subset.contains(15));
+        assertFalse(subset.contains(20));
+        assertFalse(subset.contains(13));
+        assertTrue(subset.contains(10));
+        assertTrue(subset.contains(11));
+        assertFalse(subset.contains(7));
+        assertFalse(subset.contains(8));
+
+        //Сравнение со стандартным классом
+        set.addAll(listIn1);
+        SortedSet<Integer> standart = set.subSet(9, 12);
+        assertEquals(standart, subset);
     }
 
     @Test
