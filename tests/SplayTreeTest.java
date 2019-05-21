@@ -150,10 +150,53 @@ public class SplayTreeTest {
 
     @Test
     public void headSet() {
+        init();
+        SortedSet<Integer> subset = splayTree.headSet(12);
+        assertEquals(5, subset.size());
+        //Exclusive
+        assertFalse(subset.contains(12));
+
+        assertFalse(subset.contains(14));
+        assertFalse(subset.contains(18));
+        assertFalse(subset.contains(15));
+        assertFalse(subset.contains(20));
+        assertFalse(subset.contains(13));
+        assertTrue(subset.contains(9));
+        assertTrue(subset.contains(10));
+        assertTrue(subset.contains(11));
+        assertTrue(subset.contains(7));
+        assertTrue(subset.contains(8));
+
+
+        //Сравнение со стандартным классом
+        set.addAll(listIn1);
+        SortedSet<Integer> standart = set.headSet(12);
+        assertEquals(standart, subset);
     }
 
     @Test
     public void tailSet() {
+        init();
+        SortedSet<Integer> subset = splayTree.tailSet(12);
+        //Inclusive
+        assertTrue(subset.contains(12));
+        //Inclusive
+        assertTrue(subset.contains(20));
+
+        assertTrue(subset.contains(14));
+        assertTrue(subset.contains(18));
+        assertTrue(subset.contains(15));
+        assertTrue(subset.contains(13));
+        assertFalse(subset.contains(9));
+        assertFalse(subset.contains(10));
+        assertFalse(subset.contains(11));
+        assertFalse(subset.contains(7));
+        assertFalse(subset.contains(8));
+
+        //Сравнение со стандартным классом
+        set.addAll(listIn1);
+        SortedSet<Integer> standart = set.tailSet(12);
+        assertEquals(standart, subset);
     }
 
     @Test
