@@ -101,6 +101,21 @@ public class SplayTreeTest {
         assertEquals(20, iterator.next());
     }
 
+
+    @Test
+    public void retainAll() {
+        splayTree.retainAll(listIn1);
+        assertTrue(splayTree.containsAll(listIn1));
+        assertFalse(splayTree.contains(10));
+        assertFalse(splayTree.contains(11));
+        assertFalse(splayTree.contains(14));
+        assertFalse(splayTree.contains(18));
+        assertFalse(splayTree.contains(15));
+        splayTree.clear();
+        splayTree.addAll(listIn1);
+        assertFalse(splayTree.retainAll(listIn1));
+    }
+
     @Test
     public void size() {
     }
@@ -111,14 +126,10 @@ public class SplayTreeTest {
 
     @Test
     public void isEmpty() {
-    }
-
-    @Test
-    public void contains() {
-    }
-
-    @Test
-    public void comparator() {
+        init();
+        assertFalse(splayTree.isEmpty());
+        splayTree.removeAll(listIn1);
+        assertTrue(splayTree.isEmpty());
     }
 
     @Test
@@ -201,27 +212,24 @@ public class SplayTreeTest {
 
     @Test
     public void first() {
+        init();
+        assertEquals(Optional.of(20), Optional.of(splayTree.last()));
+
     }
 
     @Test
     public void last() {
+        init();
+        assertEquals(Optional.of(7), Optional.of(splayTree.first()));
     }
 
     @Test
     public void toString1() {
+        init();
+        assertEquals(
+                "7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 20",
+                splayTree.toString()
+        );
     }
 
-    @Test
-    public void retainAll() {
-        splayTree.retainAll(listIn1);
-        assertTrue(splayTree.containsAll(listIn1));
-        assertFalse(splayTree.contains(10));
-        assertFalse(splayTree.contains(11));
-        assertFalse(splayTree.contains(14));
-        assertFalse(splayTree.contains(18));
-        assertFalse(splayTree.contains(15));
-        splayTree.clear();
-        splayTree.addAll(listIn1);
-        assertFalse(splayTree.retainAll(listIn1));
-    }
 }
