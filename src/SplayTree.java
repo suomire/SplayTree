@@ -129,6 +129,8 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         } else {
             tree1 = find(maxNode(tree1).value);
             tree1.right = tree2;
+            tree1.parent = null;
+            tree2.parent = tree1;
             return tree1;
         }
     }

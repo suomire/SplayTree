@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 
 public class SplayTreeTest {
     private List listIn1;
-    private List listIn2;
     private SortedSet<Integer> splayTree;
     private SortedSet<Integer> treeSet;
 
@@ -16,7 +15,6 @@ public class SplayTreeTest {
         splayTree = new SplayTree<>();
         treeSet = new TreeSet<>();
         listIn1 = Arrays.asList(10, 11, 14, 18, 15, 20, 13, 9, 7, 8, 12);
-        listIn2 = Arrays.asList(20, 13);
         splayTree.addAll(listIn1);
     }
 
@@ -42,6 +40,7 @@ public class SplayTreeTest {
         splayTree.remove(10);
         assertFalse(splayTree.contains(10));
         assertEquals(listIn1.size() - 2, splayTree.size());
+        splayTree.remove(11);
     }
 
     @Test
@@ -62,6 +61,19 @@ public class SplayTreeTest {
 
     @Test
     public void removeAll() {
+        init();
+        splayTree.removeAll(listIn1);
+        assertFalse(splayTree.contains(10));
+        assertFalse(splayTree.contains(11));
+        assertFalse(splayTree.contains(14));
+        assertFalse(splayTree.contains(18));
+        assertFalse(splayTree.contains(15));
+        assertFalse(splayTree.contains(20));
+        assertFalse(splayTree.contains(13));
+        assertFalse(splayTree.contains(9));
+        assertFalse(splayTree.contains(7));
+        assertFalse(splayTree.contains(8));
+        assertFalse(splayTree.contains(12));
     }
 
     @Test
