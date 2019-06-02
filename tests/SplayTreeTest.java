@@ -52,10 +52,10 @@ public class SplayTreeTest {
             if (!list.isEmpty()) {
                 int toRemove = list.get(r.nextInt(list.size()));
                 //int toRemove = splayTree.last();
-                System.out.println("removing " + toRemove + " from list : " + splayTree.toString());
+                //System.out.println("removing " + toRemove + " from list : " + splayTree.toString());
                 splayTree.remove(toRemove);
                 treeSet.remove(toRemove);
-                System.out.println("After removing " + toRemove + " from list : " + splayTree.toString());
+                //System.out.println("After removing " + toRemove + " from list : " + splayTree.toString());
                 assertEquals(treeSet.size(), splayTree.size());
                 assertTrue(treeSet.containsAll(splayTree));
                 assertTrue(splayTree.containsAll(treeSet));
