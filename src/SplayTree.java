@@ -57,28 +57,6 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         return true;
     }
 
-    /*@Override
-    public boolean addAll(Collection<? extends T> c) {
-        int result = 0;
-        for (T element : c) {
-            if (add(element)) result++;
-        }
-        return (result > 0);
-    }*/
-
-    /*@Override
-    @SuppressWarnings("unchecked")
-    public boolean retainAll(Collection<?> c) {
-        SplayTree<T> set = this;
-        List<T> retained = new ArrayList<>();
-        for (Object o : c) {
-            if (contains(o)) retained.add((T) o);
-        }
-        clear();
-        addAll(retained);
-        return !equals(set);
-    }*/
-
     @Override
     public boolean removeAll(Collection<?> c) {
         for (Object o : c) {
@@ -86,19 +64,6 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         }
         return true;
     }
-
-    /*@Override
-    public void clear() {
-        root = null;
-    }*/
-
-    /*@Override
-    public boolean containsAll(Collection<?> c) {
-        for (Object o : c) {
-            if (!contains(o)) return false;
-        }
-        return true;
-    }*/
 
     private Node<T> find(T value) {
         Node<T> current = root;
@@ -259,13 +224,13 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     }
 
 
-    /*@Override
+    @Override
     public boolean contains(Object o) {
         @SuppressWarnings("unchecked")
         T t = (T) o;
         Node<T> closest = find(t);
         return closest != null && closest.value.compareTo(t) == 0;
-    }*/
+    }
 
 
     public class SplayTreeIterator implements Iterator<T> {
