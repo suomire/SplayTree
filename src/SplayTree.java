@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.function.Consumer;
 
 public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implements SortedSet<T> {
 
@@ -23,6 +22,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
 
     public boolean add(T value) {
+        if (contains(value)) return true;
         Node<T> preInsertPlace = null;
         Node<T> elementPlace = root;
         while (elementPlace != null) {
@@ -87,18 +87,18 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         return true;
     }
 
-    @Override
+    /*@Override
     public void clear() {
         root = null;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean containsAll(Collection<?> c) {
         for (Object o : c) {
             if (!contains(o)) return false;
         }
         return true;
-    }
+    }*/
 
     private Node<T> find(T value) {
         Node<T> current = root;
@@ -187,7 +187,8 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     private void zigZig(Node<T> parent, Node<T> node) {
         Node<T> right = node.right;
         node.right = parent;
-        node.parent = parent.parent;
+        if (isRoot(parent)) node.parent = null;
+        else node.parent = parent.parent;
         setParent(parent, node);
         parent.parent = node;
         parent.left = right;
@@ -199,7 +200,8 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     private void zagZag(Node<T> parent, Node<T> node) {
         Node<T> left = node.left;
         node.left = parent;
-        node.parent = parent.parent;
+        if (isRoot(parent)) node.parent = null;
+        else node.parent = parent.parent;
         setParent(parent, node);
         parent.parent = node;
         parent.right = left;
@@ -245,6 +247,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         }
     }
 
+
     @Override
     public Iterator<T> iterator() {
         return new SplayTreeIterator();
@@ -255,7 +258,7 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         return size;
     }
 
-    @Override
+    /*@Override
     public Object[] toArray() {
         Object[] array = new Object[size];
         Iterator<T> iterator = this.iterator();
@@ -265,12 +268,12 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
             i++;
         }
         return array;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean isEmpty() {
         return root == null;
-    }
+    }*/
 
     @Override
     public boolean contains(Object o) {
@@ -287,28 +290,37 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         Node<T> next = findNext();
 
         private Node<T> findNext() {
-            current = next;
-            if (next == null) {
-                next = first();
-                return next;
+            Node<T> point;
+            if (root == null) {
+                return null;
             }
-
-            if (next.right != null) {
-                next = next.right;
-                while (next.left != null) next = next.left;
-                return next;
+            if (current == null) {
+                return minimumItemInSubtree(root);
+            } else {
+                point = current;
             }
-
-            while (next.parent != null) {
-                if (next.parent.left == next) {
-                    next = next.parent;
-                    return next;
+            if (point.right != null) {
+                return minimumItemInSubtree(point.right);
+            } else {
+                Node<T> searchPoint = null;
+                Node<T> ancestor = root;
+                while (ancestor != point && ancestor != null) {
+                    int comparison = point.value.compareTo(ancestor.value);
+                    if (comparison > 0) {
+                        ancestor = ancestor.right;
+                    } else {
+                        searchPoint = ancestor;
+                        ancestor = ancestor.left;
+                    }
                 }
-                next = next.parent;
+                return searchPoint;
             }
+        }
 
-            return null;
-
+        private Node<T> minimumItemInSubtree(Node<T> t) {
+            if (t.left != null)
+                return minimumItemInSubtree(t.left);
+            return t;
         }
 
         private Node<T> first() {
