@@ -79,14 +79,14 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
         return !equals(set);
     }*/
 
-    /*@Override
+    @Override
     public boolean removeAll(Collection<?> c) {
         for (Object o : c) {
             if (!remove(o)) return false;
         }
         return true;
     }
-*/
+
     /*@Override
     public void clear() {
         root = null;
@@ -259,13 +259,13 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
     }
 
 
-    @Override
+    /*@Override
     public boolean contains(Object o) {
         @SuppressWarnings("unchecked")
         T t = (T) o;
         Node<T> closest = find(t);
         return closest != null && closest.value.compareTo(t) == 0;
-    }
+    }*/
 
 
     public class SplayTreeIterator implements Iterator<T> {

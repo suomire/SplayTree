@@ -32,65 +32,75 @@ public class SplayTreeTest {
 
     @Test
     public void add() {
-        init();
-        assertTrue(splayTree.containsAll(list));
-        splayTree.add(2231);
-        assertTrue(splayTree.contains(2231));
-        splayTree.add(1000000);
-        assertTrue(splayTree.contains(1000000));
+        for (int i = 0; i < 10000; i++) {
+            init();
+            Random r = new Random();
+            int randomValue = r.nextInt(10) * 1000 + r.nextInt(999);
+            splayTree.add(randomValue);
+            treeSet.add(randomValue);
+            assertTrue(splayTree.contains(randomValue));
+            assertTrue(splayTree.containsAll(list));
+            assertTrue(treeSet.containsAll(splayTree));
+        }
     }
 
     @Test
     public void remove() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             init();
             Random r = new Random();
             if (!list.isEmpty()) {
                 int toRemove = list.get(r.nextInt(list.size()));
-                //System.out.println("removing " + toRemove + " from list : " + splayTree.toString());
+                //int toRemove = splayTree.last();
+                System.out.println("removing " + toRemove + " from list : " + splayTree.toString());
                 splayTree.remove(toRemove);
                 treeSet.remove(toRemove);
-                //System.out.println("After removing " + toRemove + " from list : " + splayTree.toString());
+                System.out.println("After removing " + toRemove + " from list : " + splayTree.toString());
+                assertEquals(treeSet.size(), splayTree.size());
                 assertTrue(treeSet.containsAll(splayTree));
+                assertTrue(splayTree.containsAll(treeSet));
             }
         }
     }
 
-    /*@Test
-    public void addAll() {
-        for (int i = 0; i < 1000; i++) {
-            init();
-            assertTrue(treeSet.containsAll(splayTree));
-        }
-    }*/
-
+    //донт понятно
     @Test
     public void removeAll() {
-        init();
-        splayTree.removeAll(list);
-        assertFalse(splayTree.contains(10));
-        assertFalse(splayTree.contains(11));
-        assertFalse(splayTree.contains(14));
-        assertFalse(splayTree.contains(18));
-        assertFalse(splayTree.contains(15));
-        assertFalse(splayTree.contains(20));
-        assertFalse(splayTree.contains(13));
-        assertFalse(splayTree.contains(9));
-        assertFalse(splayTree.contains(7));
-        assertFalse(splayTree.contains(8));
-        assertFalse(splayTree.contains(12));
+        for (int j = 0; j < 10; j++) {
+            init();
+            List<Integer> listForRemove = new ArrayList<>();
+            for (int i = 0; i < list.size() / 2; i++) {
+                listForRemove.add(list.get(i));
+            }
+            System.out.println("removing " + listForRemove.toString() + " from list : " + splayTree.toString());
+            splayTree.removeAll(listForRemove);
+            treeSet.removeAll(listForRemove);
+            System.out.println("After removing "
+                    + " from splaytree : " + splayTree.toString());
+            System.out.println("After removing "
+                    + " from treeset : " + treeSet.toString());
+            assertEquals(treeSet.size(), splayTree.size());
+            assertTrue(treeSet.containsAll(splayTree));
+            assertTrue(splayTree.containsAll(treeSet));
+        }
     }
 
     @Test
     public void containsAll() {
-        init();
-        boolean bool = splayTree.containsAll(list);
-        assertTrue(bool);
+        for (int i = 0; i < 10000; i++) {
+            init();
+            assertTrue(treeSet.containsAll(splayTree));
+            assertTrue(splayTree.containsAll(treeSet));
+        }
     }
 
     @Test
     public void iterator() {
-        init();
+        splayTree = new SplayTree<>();
+        treeSet = new TreeSet<>();
+        list = Arrays.asList(10, 11, 14, 18, 15, 20, 13, 9, 7, 8, 12);
+        listIn2 = Arrays.asList(20, 13, 9, 7, 8, 12);
+        splayTree.addAll(list);
         Iterator iterator = splayTree.iterator();
         assertTrue(iterator.hasNext());
         assertEquals(7, iterator.next());
@@ -106,26 +116,13 @@ public class SplayTreeTest {
         assertEquals(20, iterator.next());
     }
 
-
-  /*  @Test
-    public void retainAll() {
-        init();
-        splayTree.retainAll(listIn2);
-        assertTrue(splayTree.containsAll(listIn2));
-        assertFalse(splayTree.contains(10));
-        assertFalse(splayTree.contains(11));
-        assertFalse(splayTree.contains(14));
-        assertFalse(splayTree.contains(18));
-        assertFalse(splayTree.contains(15));
-        splayTree.clear();
-        splayTree.addAll(listIn2);
-        assertFalse(splayTree.retainAll(list));
-    }*/
-
-
     @Test
     public void subSet() {
-        init();
+        splayTree = new SplayTree<>();
+        treeSet = new TreeSet<>();
+        list = Arrays.asList(10, 11, 14, 18, 15, 20, 13, 9, 7, 8, 12);
+        listIn2 = Arrays.asList(20, 13, 9, 7, 8, 12);
+        splayTree.addAll(list);
         SortedSet<Integer> subset = splayTree.subSet(9, 12);
         assertEquals(Optional.of(11), Optional.of(subset.last()));
         assertEquals(Optional.of(9), Optional.of(subset.first()));
@@ -153,7 +150,11 @@ public class SplayTreeTest {
 
     @Test
     public void headSet() {
-        init();
+        splayTree = new SplayTree<>();
+        treeSet = new TreeSet<>();
+        list = Arrays.asList(10, 11, 14, 18, 15, 20, 13, 9, 7, 8, 12);
+        listIn2 = Arrays.asList(20, 13, 9, 7, 8, 12);
+        splayTree.addAll(list);
         SortedSet<Integer> subset = splayTree.headSet(12);
         assertEquals(5, subset.size());
         //Exclusive
@@ -179,7 +180,11 @@ public class SplayTreeTest {
 
     @Test
     public void tailSet() {
-        init();
+        splayTree = new SplayTree<>();
+        treeSet = new TreeSet<>();
+        list = Arrays.asList(10, 11, 14, 18, 15, 20, 13, 9, 7, 8, 12);
+        listIn2 = Arrays.asList(20, 13, 9, 7, 8, 12);
+        splayTree.addAll(list);
         SortedSet<Integer> subset = splayTree.tailSet(12);
         //Inclusive
         assertTrue(subset.contains(12));
@@ -202,14 +207,5 @@ public class SplayTreeTest {
         assertEquals(standart, subset);
     }
 
-
-    /*@Test
-    public void toString1() {
-        init();
-        assertEquals(
-                "7, 8, 9, 10, 11, 12, 13, 14, 15, 18, 20",
-                splayTree.toString()
-        );
-    }*/
 
 }
