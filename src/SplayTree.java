@@ -23,11 +23,6 @@ public class SplayTree<T extends Comparable<T>> extends AbstractSet<T> implement
 
 
     public boolean add(T value) {
-        Object a = (Integer) 20;
-        T tt = (T) a;
-        if (value.compareTo(tt) == 0) {
-            int b = 0;
-        }
         Node<T> preInsertPlace = null;
         Node<T> elementPlace = root;
         while (elementPlace != null) {
