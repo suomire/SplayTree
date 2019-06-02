@@ -42,15 +42,17 @@ public class SplayTreeTest {
 
     @Test
     public void remove() {
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 1000; i++) {
             init();
             Random r = new Random();
-            int toRemove = list.get(r.nextInt(list.size()));
-            System.out.println("removing " + toRemove + " from list : " + splayTree.toString());
-            splayTree.remove(toRemove);
-            treeSet.remove(toRemove);
-            System.out.println("After removing " + toRemove + " from list : " + splayTree.toString());
-            assertTrue(treeSet.containsAll(splayTree));
+            if(!list.isEmpty()) {
+                int toRemove = list.get(r.nextInt(list.size()));
+                //System.out.println("removing " + toRemove + " from list : " + splayTree.toString());
+                splayTree.remove(toRemove);
+                treeSet.remove(toRemove);
+                //System.out.println("After removing " + toRemove + " from list : " + splayTree.toString());
+                assertTrue(treeSet.containsAll(splayTree));
+            }
         }
     }
 
